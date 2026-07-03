@@ -10,3 +10,5 @@ tokio = {
 	features = ["full"]
 }
 anyhow = "1.0.103"
+toml = "1.1.2+spec-1.1.0"
+serde = "1.0.228"
