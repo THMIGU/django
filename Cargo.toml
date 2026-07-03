@@ -5,5 +5,8 @@ edition = "2024"
 
 [dependencies]
 serenity = "0.12.5"
-tokio = "1.52.3"
+tokio = {
+	version = "1.52.3",
+	features = ["full"]
+}
 anyhow = "1.0.103"
