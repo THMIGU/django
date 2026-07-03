@@ -1,5 +1,7 @@
 mod config;
 
+use std::fs;
+
 use anyhow::Result;
 use serenity::{
 	Client,
@@ -28,7 +30,8 @@ impl EventHandler for Handler {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-	let config: Config = toml::from_str(include_str!("../config.toml"))?;
+	let config_str = fs::read_to_string("config.toml")?;
+	let config: Config = toml::from_str(&config_str)?;
 
 	let token = config.token;
 	let intents = GatewayIntents::all();
