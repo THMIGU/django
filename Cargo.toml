@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-serenity = "0.12.5"
+poise = "0.6.2"
 tokio = {
 	version = "1.52.3",
 	features = ["full"]
 }
 anyhow = "1.0.103"
-toml = "1.1.2+spec-1.1.0"
+toml = "1.1.2"
 serde = "1.0.228"
