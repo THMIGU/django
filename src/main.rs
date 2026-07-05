@@ -4,15 +4,21 @@ mod config;
 mod context;
 mod data;
 mod error;
+mod services;
 
-use anyhow::{Context, Result};
+use anyhow::Context;
 use poise::serenity_prelude as serenity;
 use songbird::SerenityInit;
 
-use crate::{commands::commands, config::Config, data::Data, error::on_error};
+use crate::{
+	commands::commands,
+	config::Config,
+	data::Data,
+	error::{BotResult, on_error},
+};
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> BotResult {
 	let config: Config = Config::load().context("Failed to load config")?;
 
 	let token = config.token.clone();

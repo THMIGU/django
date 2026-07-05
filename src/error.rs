@@ -19,6 +19,19 @@ pub async fn on_error(error: FrameworkError<'_, Data, BotError>) {
 				.say("An error occured while executing this command!")
 				.await;
 		}
+		FrameworkError::CommandCheckFailed {
+			error,
+			ctx,
+			..
+		} => {
+			if let Some(error) = error {
+				eprintln!("{:#}", error);
+			}
+
+			let _ = ctx
+				.say("You cannot use this command!")
+				.await;
+		}
 		other => {
 			eprintln!("{:#}", other);
 		}
