@@ -1,4 +1,7 @@
+use std::time::Duration;
+
 use anyhow::Context;
+use songbird::input::HttpRequest;
 
 use crate::{context::Ctx, error::BotResult};
 
@@ -34,7 +37,21 @@ pub async fn play(ctx: Ctx<'_>) -> BotResult {
 
 	manager
 		.join(guild_id, channel)
-		.await?;
+		.await
+		.context("Failed to join voice channel")?;
+	ctx.say("Joined!")
+		.await
+		.context("Failed to send message")?;
+
+	let handler = manager
+		.get(guild_id)
+		.expect("Call not found");
+	let mut call = handler.lock().await;
+
+	let stream_url = "https://live.hunter.fm/lofi_high".to_string();
+	let input = HttpRequest::new(reqwest::Client::new(), stream_url);
+
+	let _track = call.play_input(input.into());
 
 	Ok(())
 }

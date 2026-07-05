@@ -5,7 +5,14 @@ edition = "2024"
 
 [dependencies]
 poise = "0.6.2"
-songbird = "0.6.0"
+songbird = {
+	version = "0.6.0",
+	features = ["serenity", "builtin-queue"]
+}
+symphonia = {
+	version = "0.5.2",
+	features = ["aac"]
+}
 tokio = {
 	version = "1.52.3",
 	features = ["full"]
@@ -13,3 +20,4 @@ tokio = {
 anyhow = "1.0.103"
 toml = "1.1.2"
 serde = "1.0.228"
+reqwest = "0.12"
