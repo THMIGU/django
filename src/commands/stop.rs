@@ -2,6 +2,7 @@ use anyhow::Context;
 
 use crate::{context::Ctx, error::BotResult, services::voice};
 
+/// Stop all playback from Django
 #[poise::command(slash_command, guild_only)]
 pub async fn stop(ctx: Ctx<'_>) -> BotResult {
 	let user = ctx.author();

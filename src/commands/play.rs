@@ -2,6 +2,7 @@ use anyhow::Context;
 
 use crate::{context::Ctx, error::BotResult, services::voice};
 
+/// Joins your VC and plays Hunter.FM
 #[poise::command(slash_command, guild_only)]
 pub async fn play(ctx: Ctx<'_>) -> BotResult {
 	let user = ctx.author();
