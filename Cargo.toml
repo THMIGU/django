@@ -10,14 +10,26 @@ songbird = {
 	features = ["serenity", "builtin-queue"]
 }
 symphonia = {
-	version = "0.5.2",
-	features = ["aac"]
+    version = "0.5",
+    default-features = false,
+    features = ["aac"]
 }
 tokio = {
 	version = "1.52.3",
 	features = ["full"]
 }
+serde = {
+	version = "1.0.228",
+	features = ["derive"]
+}
 anyhow = "1.0.103"
 toml = "1.1.2"
-serde = "1.0.228"
 reqwest = "0.12"
+
+[profile.release]
+debug = false
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+opt-level = "s"
