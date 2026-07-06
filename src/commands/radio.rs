@@ -61,7 +61,9 @@ pub async fn radio(
 		.context("Failed to send message")?;
 
 	let handler = voice::get_handler(ctx, guild_id).await?;
-	let _track = voice::play_url(handler, station_url.clone()).await?;
+	let client = ctx.data().http_client.clone();
+
+	let _track = voice::play_url(client, handler, station_url.clone()).await?;
 
 	Ok(())
 }

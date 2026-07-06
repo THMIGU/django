@@ -7,7 +7,7 @@ edition = "2024"
 poise = "0.6.2"
 songbird = {
 	version = "0.6.0",
-	features = ["serenity", "builtin-queue"]
+	features = ["builtin-queue"]
 }
 symphonia = {
     version = "0.5",

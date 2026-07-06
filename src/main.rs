@@ -36,6 +36,7 @@ async fn main() -> BotResult {
 					.await
 					.context("Failed to register commands")?;
 				println!("Logged in as {}", ready.user.tag());
+				println!("Please ignore Dave. He talks a lot.");
 
 				Ok(Data::new(config))
 			})
