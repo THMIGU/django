@@ -30,13 +30,11 @@ pub async fn get_handler(ctx: Ctx<'_>, guild_id: GuildId) -> BotResult<Handler> 
 pub async fn join(ctx: Ctx<'_>, guild_id: GuildId, channel_id: ChannelId) -> BotResult {
 	if let Ok(handler) = get_handler(ctx, guild_id).await {
 		let call = handler.lock().await;
-		let current_channel_id = call
-			.current_channel()
-			.expect("Channel ID not found");
-
-		if current_channel_id == channel_id.into() {
-			return Ok(());
-		}
+		if let Some(current_channel_id) = call.current_channel() {
+			if current_channel_id == channel_id.into() {
+				return Ok(());
+			}
+		};
 
 		call.queue().stop();
 	}

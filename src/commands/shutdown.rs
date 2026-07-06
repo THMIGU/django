@@ -1,14 +1,11 @@
-use anyhow::Context;
 use poise::serenity_prelude as serenity;
 
-use crate::{checks::is_owner, context::Ctx, error::BotResult};
+use crate::{checks::is_owner, context::Ctx, error::BotResult, utils::response};
 
 /// Shuts down Django (owner only).
 #[poise::command(slash_command, check = "is_owner")]
 pub async fn shutdown(ctx: Ctx<'_>) -> BotResult {
-	ctx.say("Shutting down!")
-		.await
-		.context("Failed to send message")?;
+	response::shutdown_embed(ctx).await?;
 
 	ctx.serenity_context()
 		.set_presence(None, serenity::OnlineStatus::Offline);

@@ -5,6 +5,7 @@ mod context;
 mod data;
 mod error;
 mod services;
+mod utils;
 
 use anyhow::Context;
 use poise::serenity_prelude as serenity;

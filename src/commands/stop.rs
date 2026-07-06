@@ -1,6 +1,4 @@
-use anyhow::Context;
-
-use crate::{context::Ctx, error::BotResult, services::voice};
+use crate::{context::Ctx, error::BotResult, services::voice, utils::response};
 
 /// Stop all playback.
 #[poise::command(slash_command, guild_only)]
@@ -22,23 +20,25 @@ pub async fn stop(ctx: Ctx<'_>) -> BotResult {
 	};
 
 	if channel.is_none() {
-		ctx.say("You are not in a voice channel!")
-			.await
-			.context("Failed to send message")?;
+		response::error_embed(ctx, "You are not in a voice channel!").await;
 		return Ok(());
 	};
 
 	{
-		let handler = voice::get_handler(ctx, guild_id).await?;
+		let Some(handler) = voice::get_handler(ctx, guild_id)
+			.await
+			.ok()
+		else {
+			response::error_embed(ctx, "There is nothing to stop!").await;
+			return Ok(());
+		};
 		let mut call = handler.lock().await;
 
 		call.stop();
 	}
 
 	voice::leave(ctx, guild_id).await?;
-	ctx.say("Stopped!")
-		.await
-		.context("Failed to send message")?;
+	response::success_embed(ctx, "All playback stopped!").await?;
 
 	Ok(())
 }

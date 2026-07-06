@@ -1,7 +1,7 @@
 use anyhow::Error;
 use poise::FrameworkError;
 
-use crate::data::Data;
+use crate::{data::Data, utils::response};
 
 pub type BotError = Error;
 pub type BotResult<T = ()> = Result<T, BotError>;
@@ -15,9 +15,7 @@ pub async fn on_error(error: FrameworkError<'_, Data, BotError>) {
 		} => {
 			eprintln!("{:#}", error);
 
-			let _ = ctx
-				.reply("An error occured while executing this command!")
-				.await;
+			response::error_embed(ctx, "An error occured while executing this command!").await;
 		}
 		FrameworkError::CommandCheckFailed {
 			error,
@@ -28,9 +26,7 @@ pub async fn on_error(error: FrameworkError<'_, Data, BotError>) {
 				eprintln!("{:#}", error);
 			}
 
-			let _ = ctx
-				.reply("You cannot use this command!")
-				.await;
+			response::error_embed(ctx, "You cannot use this command!").await;
 		}
 		other => {
 			eprintln!("{:#}", other);

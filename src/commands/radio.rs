@@ -1,7 +1,7 @@
 use anyhow::Context;
 use poise::serenity_prelude::AutocompleteChoice;
 
-use crate::{context::Ctx, error::BotResult, services::voice};
+use crate::{context::Ctx, error::BotResult, services::voice, utils::response};
 
 /// Play an internet radio.
 #[poise::command(slash_command, guild_only)]
@@ -11,6 +11,10 @@ pub async fn radio(
 	#[autocomplete = "station_autocomplete"]
 	station_name: String,
 ) -> BotResult {
+	ctx.defer()
+		.await
+		.context("Failed to defer response")?;
+
 	let user = ctx.author();
 
 	let stations = &ctx
@@ -23,12 +27,10 @@ pub async fn radio(
 		.iter()
 		.find(|s| s.name == station_name);
 
-	let station_url = match station {
-		Some(s) => &s.url,
+	let station = match station {
+		Some(s) => s,
 		None => {
-			ctx.reply("That station does not exist!")
-				.await
-				.context("Failed to send message")?;
+			response::error_embed(ctx, "That station does not exist!").await;
 			return Ok(());
 		}
 	};
@@ -49,21 +51,17 @@ pub async fn radio(
 	};
 
 	let Some(channel_id) = channel else {
-		ctx.reply("You are not in a voice channel!")
-			.await
-			.context("Failed to send message")?;
+		response::error_embed(ctx, "You are not in a voice channel!").await;
 		return Ok(());
 	};
 
 	voice::join(ctx, guild_id, channel_id).await?;
-	ctx.say("Joined!")
-		.await
-		.context("Failed to send message")?;
+	response::radio_embed(ctx, &station.name).await?;
 
 	let handler = voice::get_handler(ctx, guild_id).await?;
 	let client = ctx.data().http_client.clone();
 
-	let _track = voice::play_url(client, handler, station_url.clone()).await?;
+	let _track = voice::play_url(client, handler, station.url.clone()).await?;
 
 	Ok(())
 }
