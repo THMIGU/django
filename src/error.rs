@@ -16,7 +16,7 @@ pub async fn on_error(error: FrameworkError<'_, Data, BotError>) {
 			eprintln!("{:#}", error);
 
 			let _ = ctx
-				.say("An error occured while executing this command!")
+				.reply("An error occured while executing this command!")
 				.await;
 		}
 		FrameworkError::CommandCheckFailed {
@@ -29,7 +29,7 @@ pub async fn on_error(error: FrameworkError<'_, Data, BotError>) {
 			}
 
 			let _ = ctx
-				.say("You cannot use this command!")
+				.reply("You cannot use this command!")
 				.await;
 		}
 		other => {

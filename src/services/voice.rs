@@ -50,8 +50,12 @@ pub async fn leave(ctx: Ctx<'_>, guild_id: GuildId) -> BotResult {
 
 pub async fn play_url(handler: Handler, stream_url: String) -> BotResult<TrackHandle> {
 	let mut call = handler.lock().await;
-	let input = HttpRequest::new(reqwest::Client::new(), stream_url);
+	call.set_bitrate(songbird::driver::Bitrate::Max);
+	call.deafen(true)
+		.await
+		.context("Failed to deafen")?;
 
+	let input = HttpRequest::new(reqwest::Client::new(), stream_url.clone());
 	let track_handle = call.play_input(input.into());
 
 	Ok(track_handle)

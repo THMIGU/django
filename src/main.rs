@@ -21,7 +21,7 @@ use crate::{
 async fn main() -> BotResult {
 	let config: Config = Config::load().context("Failed to load config")?;
 
-	let token = config.token.clone();
+	let token = config.discord.token.clone();
 	let intents = serenity::GatewayIntents::all();
 
 	let framework = poise::Framework::builder()

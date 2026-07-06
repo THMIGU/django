@@ -22,7 +22,7 @@ pub async fn play(ctx: Ctx<'_>) -> BotResult {
 	};
 
 	let Some(channel_id) = channel else {
-		ctx.say("You are not in a voice channel!")
+		ctx.reply("You are not in a voice channel!")
 			.await
 			.context("Failed to send message")?;
 		return Ok(());

@@ -2,7 +2,7 @@ use anyhow::Context;
 
 use crate::{context::Ctx, error::BotResult, services::voice};
 
-/// Stop all playback from Django
+/// Stop all playback.
 #[poise::command(slash_command, guild_only)]
 pub async fn stop(ctx: Ctx<'_>) -> BotResult {
 	let user = ctx.author();
@@ -27,6 +27,13 @@ pub async fn stop(ctx: Ctx<'_>) -> BotResult {
 			.context("Failed to send message")?;
 		return Ok(());
 	};
+
+	{
+		let handler = voice::get_handler(ctx, guild_id).await?;
+		let mut call = handler.lock().await;
+
+		call.stop();
+	}
 
 	voice::leave(ctx, guild_id).await?;
 	ctx.say("Stopped!")

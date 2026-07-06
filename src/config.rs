@@ -7,8 +7,25 @@ use crate::error::BotResult;
 
 #[derive(Deserialize)]
 pub struct Config {
+	pub discord: DiscordConfig,
+	pub django: DjangoConfig,
+}
+
+#[derive(Deserialize)]
+pub struct DiscordConfig {
 	pub token: String,
 	pub owner_id: u64,
+}
+
+#[derive(Deserialize)]
+pub struct DjangoConfig {
+	pub stations: Vec<Station>,
+}
+
+#[derive(Deserialize)]
+pub struct Station {
+	pub name: String,
+	pub url: String,
 }
 
 impl Config {
