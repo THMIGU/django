@@ -8,6 +8,7 @@ use crate::error::BotResult;
 #[derive(Deserialize)]
 pub struct Config {
 	pub discord: DiscordConfig,
+	pub jellyfin: JellyfinConfig,
 	pub django: DjangoConfig,
 }
 
@@ -15,6 +16,13 @@ pub struct Config {
 pub struct DiscordConfig {
 	pub token: String,
 	pub owner_id: u64,
+}
+
+#[derive(Deserialize)]
+pub struct JellyfinConfig {
+	pub api_url: String,
+	pub api_key: String,
+	pub user_id: String,
 }
 
 #[derive(Deserialize)]

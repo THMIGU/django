@@ -3,13 +3,13 @@ use poise::serenity_prelude::AutocompleteChoice;
 
 use crate::{context::Ctx, error::BotResult, services::voice, utils::response};
 
-/// Play an internet radio.
+/// Play media from Jellyfin.
 #[poise::command(slash_command, guild_only)]
-pub async fn radio(
+pub async fn jellyfin(
 	ctx: Ctx<'_>,
-	#[description = "Station to play."]
-	#[autocomplete = "station_autocomplete"]
-	station_name: String,
+	#[description = "Media to play."]
+	#[autocomplete = "media_autocomplete"]
+	media: String,
 ) -> BotResult {
 	ctx.defer()
 		.await
@@ -17,20 +17,19 @@ pub async fn radio(
 
 	let user = ctx.author();
 
-	let stations = &ctx
+	let tracks = &ctx
 		.data()
-		.config
-		.django
-		.stations;
+		.jellyfin_metadata
+		.lock()
+		.await
+		.tracks;
 
-	let station = stations
-		.iter()
-		.find(|s| s.name == station_name);
+	let track = tracks.get(&media);
 
-	let station = match station {
-		Some(s) => s,
+	let track = match track {
+		Some(t) => t,
 		None => {
-			response::error_embed(ctx, "That station does not exist!").await;
+			response::error_embed(ctx, "That media does not exist!").await;
 			return Ok(());
 		}
 	};
@@ -56,28 +55,29 @@ pub async fn radio(
 	};
 
 	voice::join(ctx, guild_id, channel_id).await?;
-	response::radio_embed(ctx, &station.name).await?;
+	response::success_embed(ctx, &track.title).await?;
 
-	let _track = voice::play_url(ctx, guild_id, station.url.clone()).await?;
+	let _track = voice::play_url(ctx, guild_id, track.audio_url.clone()).await?;
 
 	Ok(())
 }
 
-async fn station_autocomplete(ctx: Ctx<'_>, partial: &str) -> Vec<AutocompleteChoice> {
-	let stations = &ctx
+async fn media_autocomplete(ctx: Ctx<'_>, partial: &str) -> Vec<AutocompleteChoice> {
+	let tracks = &ctx
 		.data()
-		.config
-		.django
-		.stations;
+		.jellyfin_metadata
+		.lock()
+		.await
+		.tracks;
 
-	stations
+	tracks
 		.iter()
 		.filter(|s| {
-			s.name
+			s.1.title
 				.to_lowercase()
 				.contains(&partial.to_lowercase())
 		})
 		.take(25)
-		.map(|s| AutocompleteChoice::new(s.name.clone(), s.name.clone()))
+		.map(|s| AutocompleteChoice::new(s.1.title.clone(), s.0.clone()))
 		.collect()
 }

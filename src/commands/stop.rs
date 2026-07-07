@@ -1,8 +1,14 @@
+use anyhow::Context;
+
 use crate::{context::Ctx, error::BotResult, services::voice, utils::response};
 
 /// Stop all playback.
 #[poise::command(slash_command, guild_only)]
 pub async fn stop(ctx: Ctx<'_>) -> BotResult {
+	ctx.defer()
+		.await
+		.context("Failed to defer response")?;
+
 	let user = ctx.author();
 	let guild_id = ctx
 		.guild_id()
