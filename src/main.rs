@@ -20,6 +20,10 @@ use crate::{
 
 #[tokio::main]
 async fn main() -> BotResult {
+	rustls::crypto::ring::default_provider()
+		.install_default()
+		.expect("failed to install rustls provider");
+
 	let config: Config = Config::load().context("Failed to load config")?;
 
 	let token = config.discord.token.clone();

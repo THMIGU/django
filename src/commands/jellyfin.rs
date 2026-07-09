@@ -55,9 +55,17 @@ pub async fn jellyfin(
 	};
 
 	voice::join(ctx, guild_id, channel_id).await?;
-	response::success_embed(ctx, &track.title).await?;
-
 	let _track = voice::play_url(ctx, guild_id, track.audio_url.clone()).await?;
+
+	let handler = voice::get_handler(ctx, guild_id).await?;
+	let call = handler.lock().await;
+
+	if call.queue().len() != 1 {
+		response::success_embed(ctx, "Your song has been added to the queue!").await?;
+		return Ok(());
+	}
+
+	response::jellyfin_embed(ctx, track).await?;
 
 	Ok(())
 }

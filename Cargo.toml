@@ -26,6 +26,13 @@ reqwest = {
 	version = "0.12",
 	features = ["json"]
 }
+qobuz-api = {
+	git = "https://github.com/THMIGU/qobuz-api"
+}
+rustls = {
+	version = "0.23.41",
+	features = ["ring"]
+}
 serde_json = "1.0.150"
 anyhow = "1.0.103"
 toml = "1.1.2"

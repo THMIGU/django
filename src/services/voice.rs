@@ -112,19 +112,21 @@ pub async fn play_url(
 		.await
 		.context("Failed to deafen")?;
 
+	if call.queue().is_empty() {
+		call.add_global_event(
+			Event::Track(TrackEvent::End),
+			TrackEndNotifier {
+				manager,
+				guild_id,
+			},
+		);
+	}
+
 	let client = ctx.data().http_client.clone();
 	let input = HttpRequest::new(client, stream_url.clone());
 	let track_handle = call
 		.enqueue(input.into())
 		.await;
-
-	call.add_global_event(
-		Event::Track(TrackEvent::End),
-		TrackEndNotifier {
-			manager,
-			guild_id,
-		},
-	);
 
 	Ok(track_handle)
 }
