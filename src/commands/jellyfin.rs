@@ -55,7 +55,7 @@ pub async fn jellyfin(
 	};
 
 	voice::join(ctx, guild_id, channel_id).await?;
-	let _track = voice::play_url(ctx, guild_id, track.audio_url.clone()).await?;
+	let _track = voice::queue_url_ffmpeg(ctx, guild_id, track.audio_url.clone(), true).await?;
 
 	let handler = voice::get_handler(ctx, guild_id).await?;
 	let call = handler.lock().await;

@@ -57,13 +57,10 @@ pub async fn radio(
 
 	voice::join(ctx, guild_id, channel_id).await?;
 
-	let handler = voice::get_handler(ctx, guild_id).await?;
-	let call = handler.lock().await;
-
-	call.queue().stop();
-	let _track = voice::play_url(ctx, guild_id, station.url.clone()).await?;
+	let _track = voice::queue_url_ffmpeg(ctx, guild_id, station.url.clone(), false).await?;
 
 	response::radio_embed(ctx, &station.name).await?;
+
 	Ok(())
 }
 
